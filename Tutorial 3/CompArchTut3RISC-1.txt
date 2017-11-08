@@ -1,0 +1,72 @@
+//
+// int g = 4;
+//
+
+add    r0, #4, r9
+
+//
+// int min(int a, int b, int c){
+//	   int v = a;
+//	   if(b<v)
+//		  v=b;
+//	   if(c<v)
+//		  v=c;
+//     return v;
+// }
+//
+
+min:
+	  add		r0, r26, r16		; r16 = r0(0) + r26(a)
+	  sub		r27, r16, r17{c}    ; if (b < v)
+	  jge		ifC					; jump to ifC
+	  xor		r0, r0, r0			; nop
+	  add		r0, r27, r16		; r16(v) = r0(0) + R27(b)
+ifC:  sub		r28, r16, r17{c}    ; if (c < v)
+	  jge		notC				; jump to notC
+      xor		r0, r0, r0			; nop
+	  add		r0, r28, r16		; r16(v) = r0(0) + R28(c)
+notC: ret		r25, 0				; return r16(v)
+	  xor		r0, r0, r0
+	
+//
+// int p (int i, int j, int k, int l){
+//     return min(min(g, i , j), k, l);
+// }
+//
+
+// r27 = 1
+// r28 = j
+// r29 = k
+// r30 = l
+p:
+	add		r0, r9, r26				; r26 = r0 + r9
+	callr	r25, min				; call min function
+	xor		r0, r0, r0				; nop
+	add		r0, r25, r26			; r26 = r0 + min
+	add		r0, r29, r27			; r27 = r0 + r29
+	add		r0, r30, r28			; r28 = r0 + r30
+	ret		r25, 0					; return r25
+	callr	r25, min				; call min
+	xor		r0, r0, r0				; nop
+//
+// int gcd (a, b){ 
+//     if(b == 0){
+//         return a;
+//	   } else {
+//         return gcd(b, a%b);
+//     }
+// }
+//
+
+gdc:
+		sub			r27, r0, r0{c}		; 
+		jne			getMod				; jump not equal to getMod
+		sub			r26, 27, r16		; r16(a%b) = r26(a) - r27(b)
+		ret			r26, 0				; return r26(a)
+getMod: sub			r26, 27, r0{c}		; if(r26(a) > r27(b))
+		jge			getMod				; getMod
+		sub			r26, 27, r16		; r16(a%b) = r26(a) - r27(b)
+		add			r16, r0, r26		; r26 = r16 + r0
+		ret			r26, 0				; return address
+		callr		r26, gcd			; gcd (r27(b), r26(a%b))
+		xor			r0, r0, r0			; nop
