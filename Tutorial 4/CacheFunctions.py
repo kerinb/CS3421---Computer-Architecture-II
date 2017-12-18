@@ -1,18 +1,18 @@
 import subprocess
 
 
-def analyse_the_trace(trace, ir_cache, d_cache):
+def analyse_the_trace(trace_addresses, instruction_cache, data_cache):
     access_mask = int('11100000000000000000000000000000', 2)
     access_shift = 29
     address_mask = int('00000000011111111111111111111111', 2)
 
-    for memory_address in trace:
+    for memory_address in trace_addresses:
         access_type = (memory_address & access_mask) >> access_shift
         address = memory_address & address_mask
         if access_type == 4:
-            ir_cache.read_instruction(address)
+            instruction_cache.read_instruction_from_addresses(address)
         elif access_type == 6:
-            d_cache.read_instruction(address)
+            data_cache.read_instruction_from_addresses(address)
         else:
             pass
 

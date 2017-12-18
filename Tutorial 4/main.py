@@ -15,11 +15,11 @@ def main():
     instruction_cache = cache.Cache(16, 1, 1024)
     data_cache = cache.Cache(16, 8, 256)
 
-    trace = cacheFunctions.read_trace_from_file()
+    trace_addresses = cacheFunctions.read_trace_from_file()
 
     print("Starting timer now")
     start = time()
-    cacheFunctions.analyse_the_trace(trace, instruction_cache, data_cache)
+    cacheFunctions.analyse_the_trace(trace_addresses, instruction_cache, data_cache)
     end = time()
     print("Timer ended..")
 
